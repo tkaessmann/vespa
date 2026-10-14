@@ -360,6 +360,10 @@ public class BuiltInFunctions {
         // ==== Global features ====
         put("globalSequence", new GenericFunction("globalSequence"));
         put("now", new GenericFunction("now"));
+        put("dismax", new GenericFunction("dismax", new FunctionSignature(List.of(), Set.of(
+            "",
+            "score"
+        ))));
         put("num_docs_indexed", new GenericFunction("num_docs_indexed", new FunctionSignature(List.of(), Set.of(
             "",
             "out"

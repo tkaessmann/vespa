@@ -17,6 +17,7 @@ vespa_add_library(searchlib_features OBJECT
     dense_tensor_attribute_executor.cpp
     dequantizing_tensor_attribute_executor.cpp
     direct_tensor_attribute_executor.cpp
+    dismax_feature.cpp
     distance_calculator_bundle.cpp
     distancefeature.cpp
     distancetopathfeature.cpp

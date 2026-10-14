@@ -202,4 +202,9 @@ public class ExportingTestCase extends AbstractExportingTestCase {
         assertCorrectDeriving("bm25label");
     }
 
+    @Test
+    void testDismax() throws IOException, ParseException {
+        assertCorrectDeriving("dismax");
+    }
+
 }

@@ -12,6 +12,7 @@
 #include "constant_feature.h"
 #include "debug_attribute_wait.h"
 #include "debug_wait.h"
+#include "dismax_feature.h"
 #include "distancefeature.h"
 #include "distancetopathfeature.h"
 #include "dotproductfeature.h"
@@ -91,6 +92,7 @@ void setup_search_features(fef::IBlueprintRegistry& registry) {
     registry.addPrototype(std::make_shared<ClosestBlueprint>());
     registry.addPrototype(std::make_shared<DebugAttributeWaitBlueprint>());
     registry.addPrototype(std::make_shared<DebugWaitBlueprint>());
+    registry.addPrototype(std::make_shared<DismaxBlueprint>());
     registry.addPrototype(std::make_shared<DistanceBlueprint>());
     registry.addPrototype(std::make_shared<DistanceToPathBlueprint>());
     registry.addPrototype(std::make_shared<DotProductBlueprint>());

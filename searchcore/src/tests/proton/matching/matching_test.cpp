@@ -443,6 +443,13 @@ struct MyWorld {
         config.add(indexproperties::match::Feature::NAME, "rankingExpression(\"matches_for_labels(f1){label:t1}\")");
     }
 
+    void setup_dismax_match_features() {
+        config.add("dismax.tie", "0.5");
+        config.add("dismax.boost.f1", "10");
+        config.add("dismax.boost.f2", "4");
+        config.add(indexproperties::match::Feature::NAME, "dismax");
+    }
+
     void setup_matches_for_labels_any_field_match_features() {
         config.add(indexproperties::match::Feature::NAME, "matches_for_labels");
         config.add(indexproperties::match::Feature::NAME, "matches_for_labels(f1)");
@@ -954,6 +961,31 @@ TEST_F(MatchingTest, require_that_matches_for_labels_reports_matching_labels_and
         }
         // slicing a cell out of it evaluates in the backend
         EXPECT_DOUBLE_EQ(values[slice_idx].as_double(), 1.0);
+    }
+}
+
+TEST_F(MatchingTest, require_that_dismax_sums_per_term_scores_over_boosted_fields) {
+    MyWorld world(shared_state());
+    world.basicSetup();
+    // "foo" matches f1 (boost 10), "baz" matches f2 (boost 4), "qux" matches the unboosted f3
+    world.searchContext.idx(0).getFake().addResult("f1", "foo", FakeResult().doc(10).doc(20).doc(30));
+    world.searchContext.idx(0).getFake().addResult("f2", "baz", FakeResult().doc(10).doc(20).doc(30));
+    world.searchContext.idx(0).getFake().addResult("f3", "qux", FakeResult().doc(10).doc(20).doc(30));
+    world.setup_dismax_match_features();
+    QueryBuilder<ProtonNodeTypes> builder;
+    builder.addAnd(3);
+    builder.addStringTerm("qux", "f3", 1, Weight(1));
+    builder.addStringTerm("foo", "f1", 2, Weight(1));
+    builder.addStringTerm("baz", "f2", 3, Weight(1));
+    SearchRequest::SP request = MyWorld::createRequest(StackDumpCreator::create(*builder.build()));
+    SearchReply::UP   reply = world.performSearch(*request, 1);
+    ASSERT_GT(reply->hits.size(), 0u);
+    const auto& names = reply->match_features.names;
+    ASSERT_EQ(names.size(), 1u);
+    EXPECT_EQ(names[0], "dismax");
+    ASSERT_EQ(reply->match_features.values.size(), reply->hits.size());
+    for (const auto& value : reply->match_features.values) {
+        EXPECT_DOUBLE_EQ(value.as_double(), 14.0);
     }
 }
 

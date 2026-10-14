@@ -1,0 +1,34 @@
+# Copyright Vespa.ai. Licensed under the terms of the Apache 2.0 license. See LICENSE in the project root.
+schema dismax {
+
+    document dismax {
+        field title type string {
+            indexing: index
+        }
+        field brand type string {
+            indexing: index
+        }
+        field description type string {
+            indexing: index
+        }
+    }
+
+    rank-profile default {
+        rank-properties {
+            dismax.tie: 0.2
+            dismax.boost.title: 10000
+            dismax.boost.brand: 10000
+            dismax.boost.description: 1000
+        }
+        function inline text_score() {
+            expression: dismax * 10.0 / 18000.0
+        }
+        first-phase {
+            expression: text_score
+        }
+        match-features {
+            dismax
+        }
+    }
+
+}

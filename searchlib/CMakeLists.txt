@@ -144,6 +144,7 @@ vespa_define_module(
     src/tests/features/bm25
     src/tests/features/closest
     src/tests/features/constant
+    src/tests/features/dismax
     src/tests/features/element_completeness
     src/tests/features/element_similarity_feature
     src/tests/features/elementwise

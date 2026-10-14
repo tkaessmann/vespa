@@ -54,6 +54,7 @@ public class ReservedFunctionNames extends Processor {
         temp.add("bm25_for_labels");
         temp.add("constant");
         temp.add("customTokenInputIds");
+        temp.add("dismax");
         temp.add("firstphase");
         temp.add("globalphase");
         temp.add("matches_for_labels");
